@@ -105,14 +105,14 @@
 
 - (void)testItShouldStubWithASelectorReturnValueAndArguments {
     id mock = [Cruiser nullMock];
-    [mock stub:@selector(energyLevelInWarpCore:) andReturn:theValue(30.0f) withArguments:theValue(3)];
+    [mock stub:@selector(energyLevelInWarpCore:) andReturn:theValue(30.0f) withArguments:@[theValue(3)]];
     STAssertEquals([mock energyLevelInWarpCore:3], 30.0f, @"expected method with arguments to be stubbed with the correct value");
     STAssertTrue([mock energyLevelInWarpCore:2] != 30.0f, @"expected method with arguments not to be stubbed");
 }
 
 - (void)testItShouldStubWithASelectorReturnValueAndAnyArguments {
     id mock = [Cruiser nullMock];
-    [mock stub:@selector(energyLevelInWarpCore:) andReturn:theValue(30.0f) withArguments:any()];
+    [mock stub:@selector(energyLevelInWarpCore:) andReturn:theValue(30.0f) withArguments:@[any()]];
     STAssertEquals([mock energyLevelInWarpCore:3], 30.0f, @"expected method with any() arguments to be stubbed");
     STAssertEquals([mock energyLevelInWarpCore:2], 30.0f, @"expected method with any() arguments to be stubbed");
 }
@@ -340,7 +340,7 @@
 - (void)testItShouldAllowStubbingValueForKey {
     id mock = [Cruiser mock];
     id otherMock = [Cruiser mock];
-    [mock stub:@selector(valueForKey:) andReturn:otherMock withArguments:@"foo"];
+    [mock stub:@selector(valueForKey:) andReturn:otherMock withArguments:@[@"foo"]];
     id value = [mock valueForKey:@"foo"];
     STAssertEquals(value, otherMock, @"expected valueForKey: to be stubbed");
 }
@@ -348,7 +348,7 @@
 - (void)testItShouldAllowStubbingValueForKeyPath {
     id mock = [Cruiser mock];
     id otherMock = [Cruiser mock];
-    [mock stub:@selector(valueForKeyPath:) andReturn:otherMock withArguments:@"foo.bar"];
+    [mock stub:@selector(valueForKeyPath:) andReturn:otherMock withArguments:@[@"foo.bar"]];
     id value = [mock valueForKeyPath:@"foo.bar"];
     STAssertEquals(value, otherMock, @"expected valueForKeyPath: to be stubbed");
 }

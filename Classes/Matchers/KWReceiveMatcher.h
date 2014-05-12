@@ -38,14 +38,14 @@
 
 #pragma mark - Verifying
 
-- (void)receive:(SEL)aSelector withArguments:(id)firstArgument, ...;
-- (void)receive:(SEL)aSelector withCount:(NSUInteger)aCount arguments:(id)firstArgument, ...;
-- (void)receive:(SEL)aSelector withCountAtLeast:(NSUInteger)aCount arguments:(id)firstArgument, ...;
-- (void)receive:(SEL)aSelector withCountAtMost:(NSUInteger)aCount arguments:(id)firstArgument, ...;
-- (void)receive:(SEL)aSelector andReturn:(id)aValue withArguments:(id)firstArgument, ...;
-- (void)receive:(SEL)aSelector andReturn:(id)aValue withCount:(NSUInteger)aCount arguments:(id)firstArgument, ...;
-- (void)receive:(SEL)aSelector andReturn:(id)aValue withCountAtLeast:(NSUInteger)aCount arguments:(id)firstArgument, ...;
-- (void)receive:(SEL)aSelector andReturn:(id)aValue withCountAtMost:(NSUInteger)aCount arguments:(id)firstArgument, ...;
+- (void)receive:(SEL)aSelector withArguments:(NSArray *)arguments;
+- (void)receive:(SEL)aSelector withCount:(NSUInteger)aCount withArguments:(NSArray *)arguments;
+- (void)receive:(SEL)aSelector withCountAtLeast:(NSUInteger)aCount withArguments:(NSArray *)arguments;
+- (void)receive:(SEL)aSelector withCountAtMost:(NSUInteger)aCount withArguments:(NSArray *)arguments;
+- (void)receive:(SEL)aSelector andReturn:(id)aValue withArguments:(NSArray *)arguments;
+- (void)receive:(SEL)aSelector andReturn:(id)aValue withCount:(NSUInteger)aCount withArguments:(NSArray *)arguments;
+- (void)receive:(SEL)aSelector andReturn:(id)aValue withCountAtLeast:(NSUInteger)aCount withArguments:(NSArray *)arguments;
+- (void)receive:(SEL)aSelector andReturn:(id)aValue withCountAtMost:(NSUInteger)aCount withArguments:(NSArray *)arguments;
 
 #pragma mark Invocation Capturing Methods
 

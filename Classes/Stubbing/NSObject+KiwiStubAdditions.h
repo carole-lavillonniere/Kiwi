@@ -17,16 +17,16 @@
 
 - (void)stub:(SEL)aSelector;
 - (void)stub:(SEL)aSelector withBlock:(id (^)(NSArray *params))block;
-- (void)stub:(SEL)aSelector withArguments:(id)firstArgument, ...;
+- (void)stub:(SEL)aSelector withArguments:(NSArray *)arguments;
 - (void)stub:(SEL)aSelector andReturn:(id)aValue;
-- (void)stub:(SEL)aSelector andReturn:(id)aValue withArguments:(id)firstArgument, ...;
+- (void)stub:(SEL)aSelector andReturn:(id)aValue withArguments:(NSArray *)arguments;
 - (void)stub:(SEL)aSelector andReturn:(id)aValue times:(NSNumber *)times afterThatReturn:(id)aSecondValue;
 
 + (void)stub:(SEL)aSelector;
 + (void)stub:(SEL)aSelector withBlock:(id (^)(NSArray *params))block;
-+ (void)stub:(SEL)aSelector withArguments:(id)firstArgument, ...;
++ (void)stub:(SEL)aSelector withArguments:(NSArray *)arguments;
 + (void)stub:(SEL)aSelector andReturn:(id)aValue;
-+ (void)stub:(SEL)aSelector andReturn:(id)aValue withArguments:(id)firstArgument, ...;
++ (void)stub:(SEL)aSelector andReturn:(id)aValue withArguments:(NSArray *)arguments;
 + (void)stub:(SEL)aSelector andReturn:(id)aValue times:(NSNumber *)times afterThatReturn:(id)aSecondValue;
 
 - (id)stub DEPRECATED_ATTRIBUTE;

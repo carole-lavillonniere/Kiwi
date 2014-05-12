@@ -62,6 +62,7 @@
 
 // used for message patterns to allow matching any value
 #define any() [KWAny any]
+#define nilValue [KWNull null]
 
 // If a gcc compatible compiler is available, use the statement and
 // declarations in expression extension to provide a convenient catch-all macro

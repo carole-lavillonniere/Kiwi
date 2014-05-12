@@ -14,6 +14,8 @@
 #import "KWGenericMatchEvaluator.h"
 #import "Kiwi.h"
 
+static NSString * const KWMessagePatternException = @"KWMessagePatternException";
+
 @implementation KWMessagePattern
 
 #pragma mark - Initializing
@@ -27,38 +29,24 @@
     if (self) {
         selector = aSelector;
 
-        if ([anArray count] > 0)
+        if (anArray) {
+            NSUInteger numArgsForSelector = KWSelectorParameterCount(aSelector);
+            if (anArray.count < numArgsForSelector || anArray.count > numArgsForSelector) {
+                [NSException raise:KWMessagePatternException format:@"Wrong arguments count (%d instead of %d for selector %@)", (int)anArray.count, (int)numArgsForSelector, NSStringFromSelector(aSelector)];
+            }
             argumentFilters = [anArray copy];
+        }
     }
 
     return self;
-}
-
-- (id)initWithSelector:(SEL)aSelector firstArgumentFilter:(id)firstArgumentFilter argumentList:(va_list)argumentList {
-    NSUInteger count = KWSelectorParameterCount(aSelector);
-    NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
-    [array addObject:(firstArgumentFilter != nil) ? firstArgumentFilter : [KWNull null]];
-
-    for (NSUInteger i = 1; i < count; ++i)
-    {
-        id object = va_arg(argumentList, id);
-        [array addObject:(object != nil) ? object : [KWNull null]];
-    }
-
-    va_end(argumentList);
-    return [self initWithSelector:aSelector argumentFilters:array];
 }
 
 + (id)messagePatternWithSelector:(SEL)aSelector {
     return [self messagePatternWithSelector:aSelector argumentFilters:nil];
 }
 
-+ (id)messagePatternWithSelector:(SEL)aSelector argumentFilters:(NSArray *)anArray {
-    return [[[self alloc] initWithSelector:aSelector argumentFilters:anArray] autorelease];
-}
-
-+ (id)messagePatternWithSelector:(SEL)aSelector firstArgumentFilter:(id)firstArgumentFilter argumentList:(va_list)argumentList {
-    return [[[self alloc] initWithSelector:aSelector firstArgumentFilter:firstArgumentFilter argumentList:argumentList] autorelease];
++ (id)messagePatternWithSelector:(SEL)aSelector argumentFilters:(NSArray *)argumentFilters {
+    return [[[self alloc] initWithSelector:aSelector argumentFilters:argumentFilters] autorelease];
 }
 
 + (id)messagePatternFromInvocation:(NSInvocation *)anInvocation {
@@ -145,7 +133,7 @@
             }
         } else if ([argumentFilter isEqual:[KWNull null]]) {
             if (!KWObjCTypeIsPointerLike(objCType)) {
-                [NSException raise:@"KWMessagePatternException" format:@"nil was specified as an argument filter, but argument(%d) is not a pointer for @selector(%@)", (int)(i + 1), NSStringFromSelector([anInvocation selector])];
+                [NSException raise:KWMessagePatternException format:@"nil was specified as an argument filter, but argument(%d) is not a pointer for @selector(%@)", (int)(i + 1), NSStringFromSelector([anInvocation selector])];
             }
             void *p = nil;
             [anInvocation getMessageArgument:&p atIndex:i];

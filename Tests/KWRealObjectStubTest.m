@@ -42,14 +42,14 @@
     Cruiser *cruiser = [Cruiser cruiserWithCallsign:@"Galactica"];
     NSString *fighterCallsign = @"Viper 1";
     Fighter *fighter = [Fighter fighterWithCallsign:fighterCallsign];
-    [cruiser stub:@selector(fighterWithCallsign:) andReturn:fighter withArguments:fighterCallsign];
+    [cruiser stub:@selector(fighterWithCallsign:) andReturn:fighter withArguments:@[fighterCallsign]];
     STAssertEquals(fighter, [cruiser fighterWithCallsign:fighterCallsign], @"expected method to be stubbed");
 }
 
 - (void)testItShouldStubInstanceMethodsReturningObjectsWithAnyArguments {
     Cruiser *cruiser = [Cruiser cruiserWithCallsign:@"Galactica"];
     Fighter *fighter = [Fighter fighterWithCallsign:@"Viper 1"];
-    [cruiser stub:@selector(fighterWithCallsign:) andReturn:fighter withArguments:any()];
+    [cruiser stub:@selector(fighterWithCallsign:) andReturn:fighter withArguments:@[any()]];
     STAssertEquals(fighter, [cruiser fighterWithCallsign:@"Foo"], @"expected method to be stubbed");
 }
 

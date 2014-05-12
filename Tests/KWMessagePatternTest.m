@@ -17,26 +17,27 @@
 
 @implementation KWMessagePatternTest
 
-- (KWMessagePattern *)messagePatternWithSelector:(SEL)aSelector arguments:(id)firstArgument, ... {
-    va_list argumentList;
-    va_start(argumentList, firstArgument);
-    return [KWMessagePattern messagePatternWithSelector:aSelector firstArgumentFilter:firstArgument argumentList:argumentList];
-}
-
-- (void)testItShouldCreateMessagePatternsWithVarArgs {
-    KWMessagePattern *messagePattern = [self messagePatternWithSelector:@selector(dictionaryWithObjects:forKeys:count:) arguments:@"foo",
-                                                                                                                                  nil,
-                                                                                                                                  [KWValue valueWithUnsignedInt:1]];
+- (void)testItShouldCreateMessagePatternsWithArguments {
+    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:@selector(dictionaryWithObjects:forKeys:count:) argumentFilters:@[@"foo", nilValue, [KWValue valueWithUnsignedInt:1]]];
     STAssertEqualObjects((messagePattern.argumentFilters)[0], @"foo", @"expected matching argument");
     STAssertEqualObjects((messagePattern.argumentFilters)[1], [KWNull null], @"expected matching argument");
     STAssertEqualObjects((messagePattern.argumentFilters)[2], [KWValue valueWithUnsignedInt:1], @"expected matching argument");
 }
 
+- (void)testItShouldFailCreatingMessagePatternsWithTooFewArguments {
+    STAssertThrows([KWMessagePattern messagePatternWithSelector:@selector(dictionaryWithObjects:forKeys:count:) argumentFilters:@[@"foo"]], @"Should have raised an exception");
+}
+
+- (void)testItShouldNotFailCreatingMessagePatternsWithNilArguments {
+    STAssertNoThrow([KWMessagePattern messagePatternWithSelector:@selector(dictionaryWithObjects:forKeys:count:) argumentFilters:nil], @"Should not have raised an exception");
+}
+
+- (void)testItShouldFailCreatingMessagePatternsWithTooManyArguments {
+    STAssertThrows(([KWMessagePattern messagePatternWithSelector:@selector(dictionaryWithObjects:forKeys:count:) argumentFilters:@[@"1", @"2", @"3", @"4"]]), @"Should have raised an exception");
+}
+
 - (void)testItShouldMatchInvocationsWithNilArguments {
-    KWMessagePattern *messagePattern = [self messagePatternWithSelector:@selector(addObserver:forKeyPath:options:context:) arguments:@"foo",
-                                                                                                                                     nil,
-                                                                                                                                     [KWValue valueWithUnsignedInt:0],
-                                                                                                                                     nil];
+    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:@selector(addObserver:forKeyPath:options:context:) argumentFilters:@[@"foo", nilValue, [KWValue valueWithUnsignedInt:0], nilValue]];
     NSMethodSignature *signature = [NSObject instanceMethodSignatureForSelector:@selector(addObserver:forKeyPath:options:context:)];
     NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
     [invocation setSelector:@selector(addObserver:forKeyPath:options:context:)];
@@ -49,10 +50,7 @@
 }
 
 - (void)testItShouldMatchInvocationsWithAnyArguments {
-    KWMessagePattern *messagePattern = [self messagePatternWithSelector:@selector(addObserver:forKeyPath:options:context:) arguments:@"foo",
-                                                                                                                                     [KWAny any],
-                                                                                                                                     [KWAny any],
-                                                                                                                                     nil];
+    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:@selector(addObserver:forKeyPath:options:context:) argumentFilters:@[@"foo", [KWAny any], [KWAny any], nilValue]];
     NSMethodSignature *signature = [NSObject instanceMethodSignatureForSelector:@selector(addObserver:forKeyPath:options:context:)];
     NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
     [invocation setSelector:@selector(addObserver:forKeyPath:options:context:)];
@@ -65,8 +63,7 @@
 }
 
 - (void)testItShouldMatchInvocationsWithClassArgument {
-    KWMessagePattern *messagePattern = [self messagePatternWithSelector:@selector(isKindOfClass:)
-                                                              arguments:[NSObject class], nil];
+    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:@selector(isKindOfClass:) argumentFilters:@[[NSObject class]]];
     NSMethodSignature *signature = [NSObject instanceMethodSignatureForSelector:@selector(isKindOfClass:)];
     NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
     [invocation setSelector:@selector(isKindOfClass:)];
@@ -135,10 +132,7 @@
 }
 
 - (void)testItShouldNotMatchInvocationsWithAnyArguments {
-    KWMessagePattern *messagePattern = [self messagePatternWithSelector:@selector(addObserver:forKeyPath:options:context:) arguments:@"foo",
-                                                                                                                                     [KWAny any],
-                                                                                                                                     [KWValue valueWithUnsignedInt:0],
-                                                                                                                                     nil];
+    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:@selector(addObserver:forKeyPath:options:context:) argumentFilters:@[@"foo", [KWAny any], [KWValue valueWithUnsignedInt:0], nilValue]];
     NSMethodSignature *signature = [NSObject instanceMethodSignatureForSelector:@selector(addObserver:forKeyPath:options:context:)];
     NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
     [invocation setSelector:@selector(addObserver:forKeyPath:options:context:)];
@@ -151,10 +145,7 @@
 }
 
 - (void)testItShouldNotMatchInvocationsWithDifferentArguments {
-    KWMessagePattern *messagePattern = [self messagePatternWithSelector:@selector(addObserver:forKeyPath:options:context:) arguments:@"foo",
-                                                                                                                                     nil,
-                                                                                                                                     [KWValue valueWithUnsignedInt:0],
-                                                                                                                                     nil];
+    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:@selector(addObserver:forKeyPath:options:context:) argumentFilters:@[@"foo", nilValue, [KWValue valueWithUnsignedInt:0], nilValue]];
     NSMethodSignature *signature = [NSObject instanceMethodSignatureForSelector:@selector(addObserver:forKeyPath:options:context:)];
     NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
     [invocation setSelector:@selector(addObserver:forKeyPath:options:context:)];

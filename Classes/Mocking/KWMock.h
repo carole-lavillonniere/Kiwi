@@ -56,9 +56,9 @@
 
 - (void)stub:(SEL)aSelector;
 - (void)stub:(SEL)aSelector withBlock:(id (^)(NSArray *params))block;
-- (void)stub:(SEL)aSelector withArguments:(id)firstArgument, ...;
+- (void)stub:(SEL)aSelector withArguments:(NSArray *)arguments;
 - (void)stub:(SEL)aSelector andReturn:(id)aValue;
-- (void)stub:(SEL)aSelector andReturn:(id)aValue withArguments:(id)firstArgument, ...;
+- (void)stub:(SEL)aSelector andReturn:(id)aValue withArguments:(NSArray *)arguments;
 
 - (id)stub;
 - (id)stubAndReturn:(id)aValue;
@@ -78,7 +78,7 @@
 #pragma mark - Expecting Messages
 
 - (void)expect:(SEL)aSelector;
-- (void)expect:(SEL)aSelector withArguments:(id)firstArgument, ...;
+- (void)expect:(SEL)aSelector withArguments:(NSArray *)arguments;
 
 - (id)expect;
 

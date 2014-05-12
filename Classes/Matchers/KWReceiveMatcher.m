@@ -207,59 +207,43 @@ static NSString * const StubValueKey = @"StubValueKey";
 
 #pragma mark - Verifying
 
-- (void)receive:(SEL)aSelector withArguments:(id)firstArgument, ... {
-    va_list argumentList;
-    va_start(argumentList, firstArgument);
-    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector firstArgumentFilter:firstArgument argumentList:argumentList];
+- (void)receive:(SEL)aSelector withArguments:(NSArray *)arguments {
+    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector argumentFilters:arguments];
     [(id)self receiveUnspecifiedCountOfMessagePattern:messagePattern];
 }
 
-- (void)receive:(SEL)aSelector withCount:(NSUInteger)aCount arguments:(id)firstArgument, ... {
-    va_list argumentList;
-    va_start(argumentList, firstArgument);
-    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector firstArgumentFilter:firstArgument argumentList:argumentList];
+- (void)receive:(SEL)aSelector withCount:(NSUInteger)aCount withArguments:(NSArray *)arguments {
+    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector argumentFilters:arguments];
     [(id)self receiveMessagePattern:messagePattern countType:KWCountTypeExact count:aCount];
 }
 
-- (void)receive:(SEL)aSelector withCountAtLeast:(NSUInteger)aCount arguments:(id)firstArgument, ... {
-    va_list argumentList;
-    va_start(argumentList, firstArgument);
-    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector firstArgumentFilter:firstArgument argumentList:argumentList];
+- (void)receive:(SEL)aSelector withCountAtLeast:(NSUInteger)aCount withArguments:(NSArray *)arguments {
+    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector argumentFilters:arguments];
     [(id)self receiveMessagePattern:messagePattern countType:KWCountTypeAtLeast count:aCount];
 }
 
-- (void)receive:(SEL)aSelector withCountAtMost:(NSUInteger)aCount arguments:(id)firstArgument, ... {
-    va_list argumentList;
-    va_start(argumentList, firstArgument);
-    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector firstArgumentFilter:firstArgument argumentList:argumentList];
+- (void)receive:(SEL)aSelector withCountAtMost:(NSUInteger)aCount withArguments:(NSArray *)arguments {
+    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector argumentFilters:arguments];
     [(id)self receiveMessagePattern:messagePattern countType:KWCountTypeAtMost count:aCount];
 }
 
-- (void)receive:(SEL)aSelector andReturn:(id)aValue withArguments:(id)firstArgument, ... {
-    va_list argumentList;
-    va_start(argumentList, firstArgument);
-    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector firstArgumentFilter:firstArgument argumentList:argumentList];
+- (void)receive:(SEL)aSelector andReturn:(id)aValue withArguments:(NSArray *)arguments {
+    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector argumentFilters:arguments];
     [(id)self receiveUnspecifiedCountOfMessagePattern:messagePattern andReturn:aValue];
 }
 
-- (void)receive:(SEL)aSelector andReturn:(id)aValue withCount:(NSUInteger)aCount arguments:(id)firstArgument, ... {
-    va_list argumentList;
-    va_start(argumentList, firstArgument);
-    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector firstArgumentFilter:firstArgument argumentList:argumentList];
+- (void)receive:(SEL)aSelector andReturn:(id)aValue withCount:(NSUInteger)aCount withArguments:(NSArray *)arguments {
+    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector argumentFilters:arguments];
     [(id)self receiveMessagePattern:messagePattern andReturn:aValue countType:KWCountTypeExact count:aCount];
 }
 
-- (void)receive:(SEL)aSelector andReturn:(id)aValue withCountAtLeast:(NSUInteger)aCount arguments:(id)firstArgument, ... {
-    va_list argumentList;
-    va_start(argumentList, firstArgument);
-    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector firstArgumentFilter:firstArgument argumentList:argumentList];
+- (void)receive:(SEL)aSelector andReturn:(id)aValue withCountAtLeast:(NSUInteger)aCount withArguments:(NSArray *)arguments {
+    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector argumentFilters:arguments];
     [(id)self receiveMessagePattern:messagePattern andReturn:aValue countType:KWCountTypeAtLeast count:aCount];
 }
 
-- (void)receive:(SEL)aSelector andReturn:(id)aValue withCountAtMost:(NSUInteger)aCount arguments:(id)firstArgument, ... {
-    va_list argumentList;
-    va_start(argumentList, firstArgument);
-    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector firstArgumentFilter:firstArgument argumentList:argumentList];
+- (void)receive:(SEL)aSelector andReturn:(id)aValue withCountAtMost:(NSUInteger)aCount withArguments:(NSArray *)arguments {
+    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector argumentFilters:arguments];
     [(id)self receiveMessagePattern:messagePattern andReturn:aValue countType:KWCountTypeAtMost count:aCount];
 }
 
