@@ -112,9 +112,9 @@
 
 - (void)testItShouldStubWithASelectorReturnValueAndAnyArguments {
     id mock = [Cruiser nullMock];
-    [mock stub:@selector(energyLevelInWarpCore:) andReturn:theValue(30.0f) withArguments:@[any()]];
-    STAssertEquals([mock energyLevelInWarpCore:3], 30.0f, @"expected method with any() arguments to be stubbed");
-    STAssertEquals([mock energyLevelInWarpCore:2], 30.0f, @"expected method with any() arguments to be stubbed");
+    [mock stub:@selector(energyLevelInWarpCore:) andReturn:theValue(30.0f) withArguments:@[anyValue]];
+    STAssertEquals([mock energyLevelInWarpCore:3], 30.0f, @"expected method with anyValue arguments to be stubbed");
+    STAssertEquals([mock energyLevelInWarpCore:2], 30.0f, @"expected method with anyValue arguments to be stubbed");
 }
 
 - (void)testItShouldStubWithAMessage {
