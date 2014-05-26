@@ -10,8 +10,8 @@
 
 @protocol KiwiSpyAdditions <NSObject>
 
-- (KWCaptureSpy *)captureArgument:(SEL)selector atIndex:(NSUInteger)index;
-+ (KWCaptureSpy *)captureArgument:(SEL)selector atIndex:(NSUInteger)index;
+- (KWCaptureSpy *)captureArgument:(SEL)selector atIndex:(NSUInteger)index __attribute__((deprecated));
++ (KWCaptureSpy *)captureArgument:(SEL)selector atIndex:(NSUInteger)index __attribute__((deprecated));
 
 @end
 

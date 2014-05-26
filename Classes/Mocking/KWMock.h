@@ -8,7 +8,6 @@
 #import "KWInvocationCapturer.h"
 
 @class KWMessagePattern;
-@class KWCaptureSpy;
 
 @protocol KWMessageSpying;
 @protocol KWVerifying;
