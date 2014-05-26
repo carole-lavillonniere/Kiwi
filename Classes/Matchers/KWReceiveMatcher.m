@@ -44,20 +44,20 @@ static NSString * const StubValueKey = @"StubValueKey";
 
 + (NSArray *)matcherStrings {
     return @[
-            NSStringFromSelector(@selector(receive:)),
-            NSStringFromSelector(@selector(receive:withCount:)),
-            NSStringFromSelector(@selector(receive:withCountAtLeast:)),
-            NSStringFromSelector(@selector(receive:withCountAtMost:)),
-            NSStringFromSelector(@selector(receive:capturedArguments:)),
-            NSStringFromSelector(@selector(receive:andReturn:)),
-            NSStringFromSelector(@selector(receive:andReturn:withCount:)),
-            NSStringFromSelector(@selector(receive:andReturn:withCountAtLeast:)),
-            NSStringFromSelector(@selector(receive:andReturn:withCountAtMost:)),
-            NSStringFromSelector(@selector(receive:andReturn:capturedArguments:)),
-            NSStringFromSelector(@selector(receiveMessagePattern:countType:count:capturedArguments:)),
-            NSStringFromSelector(@selector(receiveMessagePattern:andReturn:countType:count:capturedArguments:)),
-            NSStringFromSelector(@selector(receiveUnspecifiedCountOfMessagePattern:)),
-            NSStringFromSelector(@selector(receiveUnspecifiedCountOfMessagePattern:andReturn:))
+            @"receive:",
+            @"receive:withCount:",
+            @"receive:withCountAtLeast:",
+            @"receive:withCountAtMost:",
+            @"receive:capturedArguments:",
+            @"receive:andReturn:",
+            @"receive:andReturn:withCount:",
+            @"receive:andReturn:withCountAtLeast:",
+            @"receive:andReturn:withCountAtMost:",
+            @"receive:andReturn:capturedArguments:",
+            @"receiveMessagePattern:countType:count:capturedArguments:",
+            @"receiveMessagePattern:andReturn:countType:count:capturedArguments:",
+            @"receiveUnspecifiedCountOfMessagePattern:",
+            @"receiveUnspecifiedCountOfMessagePattern:andReturn:"
     ];
 }
 
