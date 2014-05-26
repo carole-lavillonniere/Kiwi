@@ -1,6 +1,6 @@
 #import "KWMessageSpying.h"
 
-__attribute__ ((deprecated))
+DEPRECATED_ATTRIBUTE
 
 @interface KWCaptureSpy : NSObject<KWMessageSpying>
 
