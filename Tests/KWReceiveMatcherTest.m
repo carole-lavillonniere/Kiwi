@@ -182,6 +182,52 @@
     STAssertTrue(value == 42u, @"expected stubbed value");
 }
 
+- (void)testItShouldCaptureTheArguments {
+    id subject = [Robot robot];
+    id matcher = [KWReceiveMatcher matcherWithSubject:subject];
+    NSArray *capturedArguments = nil;
+    [matcher receive:@selector(speak:ofType:) capturedArguments:&capturedArguments];
+    [subject speak:@"Hello" ofType:[NSString class]];
+    STAssertTrue([matcher evaluate], @"expected positive match");
+    STAssertTrue(capturedArguments.count == 2, @"expected 2 captured arguments");
+    STAssertEqualObjects(capturedArguments[0], @"Hello", @"Unexpected argument #1: %@", capturedArguments[0]);
+    STAssertEqualObjects(capturedArguments[1], [NSString class], @"Unexpected argument #2: %@", capturedArguments[1]);
+}
+
+- (void)testItShouldCaptureNoArguments {
+    id subject = [Cruiser cruiser];
+    id matcher = [KWReceiveMatcher matcherWithSubject:subject];
+    NSArray *capturedArguments = nil;
+    [matcher receive:@selector(crewComplement) capturedArguments:&capturedArguments];
+    [subject crewComplement];
+    STAssertTrue([matcher evaluate], @"expected positive match");
+    STAssertTrue(capturedArguments.count == 0, @"expected 0 captured arguments");
+}
+
+- (void)testItShouldCaptureTheArgumentsAndReturn {
+    id subject = [Cruiser cruiser];
+    id matcher = [KWReceiveMatcher matcherWithSubject:subject];
+    NSArray *capturedArguments = nil;
+    [matcher receive:@selector(orbitPeriodForMass:) andReturn:theValue(2) capturedArguments:&capturedArguments];
+    float value = [subject orbitPeriodForMass:5.5];
+    STAssertTrue([matcher evaluate], @"expected positive match");
+    STAssertTrue(capturedArguments.count == 1, @"expected 1 captured argument");
+    STAssertEquals([capturedArguments[0] floatValue], 5.5f, @"Unexpected argument #1: %@", capturedArguments[0]);
+    STAssertTrue(value == 2, @"expected stubbed value");
+}
+
+- (void)testItShouldFailWhenMethodCalledMoreThanOnceWithArgsCapture {
+    id subject = [Robot robot];
+    id matcher = [KWReceiveMatcher matcherWithSubject:subject];
+    NSArray *capturedArguments = nil;
+    [matcher receive:@selector(speak:ofType:) capturedArguments:&capturedArguments];
+
+    [subject speak:@"Hello" ofType:[NSString class]];
+    [subject speak:@"Goodbye" ofType:[NSString class]];
+
+    STAssertFalse([matcher evaluate], @"expected negative match");
+}
+
 @end
 
 #endif // #if KW_TESTS_ENABLED

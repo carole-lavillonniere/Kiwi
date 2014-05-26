@@ -160,6 +160,77 @@
     STAssertEqualObjects(@([mock methodSignatureForSelector:selector].methodReturnType), @"@", @"expected id as default return type");
 }
 
+- (void)testItShouldCaptureArgs{
+    id subject = [Robot robot];
+    NSArray *capturedArguments = nil;
+
+    NSString *arg1 = @"Hello";
+    Class arg2 = [NSString class];
+
+    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:@selector(speak:ofType:)];
+    id stub = [KWStub stubWithMessagePattern:messagePattern value:nil capturedArguments:&capturedArguments];
+    id invocation = [NSInvocation invocationWithTarget:subject selector:@selector(speak:ofType:) messageArguments:&arg1, &arg2];
+
+    STAssertTrue([stub processInvocation:invocation], @"expected stub to process invocation");
+    STAssertTrue(capturedArguments.count == 2, @"expected 2 captured arguments");
+    STAssertEqualObjects(capturedArguments[0], arg1, @"Unexpected argument #1: %@", capturedArguments[0]);
+    STAssertEqualObjects(capturedArguments[1], arg2, @"Unexpected argument #2: %@", capturedArguments[1]);
+}
+
+- (void)testItShouldCaptureArgsAndReturn{
+    id subject = [Cruiser cruiser];
+    NSArray *capturedArguments = nil;
+
+    float arg = 2.5f;
+    float result = 3.5f;
+
+    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:@selector(orbitPeriodForMass:)];
+    id stub = [KWStub stubWithMessagePattern:messagePattern value:theValue(result) capturedArguments:&capturedArguments];
+    id invocation = [NSInvocation invocationWithTarget:subject selector:@selector(orbitPeriodForMass:) messageArguments:&arg];
+
+    STAssertTrue([stub processInvocation:invocation], @"expected stub to process invocation");
+    STAssertTrue(capturedArguments.count == 1, @"expected 2 captured arguments");
+    STAssertEquals([capturedArguments[0] floatValue], arg, @"Unexpected argument #1: %@", capturedArguments[0]);
+
+    float outcomeValue;
+    [invocation getReturnValue:&outcomeValue];
+    STAssertEquals(outcomeValue, result, @"Wrong return value");
+}
+
+- (void)testItShouldCaptureArgsWithArgumentFilter{
+    id subject = [Robot robot];
+    NSArray *capturedArguments = nil;
+
+    NSString *arg1 = @"Hello";
+    Class arg2 = [NSString class];
+    NSArray *argumentFilters = @[@"Hello", any()];
+
+    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:@selector(speak:ofType:) argumentFilters:argumentFilters];
+    id stub = [KWStub stubWithMessagePattern:messagePattern value:nil capturedArguments:&capturedArguments];
+    id invocation = [NSInvocation invocationWithTarget:subject selector:@selector(speak:ofType:) messageArguments:&arg1, &arg2];
+
+    STAssertTrue([stub processInvocation:invocation], @"expected stub to process invocation");
+    STAssertTrue(capturedArguments.count == 2, @"expected 2 captured arguments");
+    STAssertEqualObjects(capturedArguments[0], arg1, @"Unexpected argument #1: %@", capturedArguments[0]);
+    STAssertEqualObjects(capturedArguments[1], arg2, @"Unexpected argument #2: %@", capturedArguments[1]);
+}
+
+- (void)testItShouldNotCaptureArgsWhenNotMatchingArgumentFilter{
+    id subject = [Robot robot];
+    NSArray *capturedArguments = nil;
+
+    NSString *arg1 = @"Hello";
+    Class arg2 = [NSString class];
+    NSArray *argumentFilters = @[@"Wrong arg", any()];
+
+    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:@selector(speak:ofType:) argumentFilters:argumentFilters];
+    id stub = [KWStub stubWithMessagePattern:messagePattern value:nil capturedArguments:&capturedArguments];
+    id invocation = [NSInvocation invocationWithTarget:subject selector:@selector(speak:ofType:) messageArguments:&arg1, &arg2];
+
+    STAssertFalse([stub processInvocation:invocation], @"expected stub to fail processing invocation");
+    STAssertTrue(capturedArguments.count == 0, @"expected no captured arguments");
+}
+
 @end
 
 #endif // #if KW_TESTS_ENABLED

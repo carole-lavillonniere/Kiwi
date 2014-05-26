@@ -16,19 +16,22 @@
 @property (nonatomic, copy) id (^block)(NSArray *params);
 @end
 
-@implementation KWStub
+@implementation KWStub {
+    NSArray * __autoreleasing *_capturedArguments;
+}
 
 #pragma mark - Initializing
 
 - (id)initWithMessagePattern:(KWMessagePattern *)aMessagePattern {
-    return [self initWithMessagePattern:aMessagePattern value:nil];
+    return [self initWithMessagePattern:aMessagePattern value:nil capturedArguments:nil];
 }
 
-- (id)initWithMessagePattern:(KWMessagePattern *)aMessagePattern value:(id)aValue {
+- (id)initWithMessagePattern:(KWMessagePattern *)aMessagePattern value:(id)aValue capturedArguments:(NSArray **)capturedArguments {
     self = [super init];
     if (self) {
         messagePattern = aMessagePattern;
         value = aValue;
+        _capturedArguments = capturedArguments;
     }
     return self;
 }
@@ -58,7 +61,11 @@
 }
 
 + (id)stubWithMessagePattern:(KWMessagePattern *)aMessagePattern value:(id)aValue {
-    return [[self alloc] initWithMessagePattern:aMessagePattern value:aValue];
+    return [[self alloc] initWithMessagePattern:aMessagePattern value:aValue capturedArguments:nil];
+}
+
++ (id)stubWithMessagePattern:(KWMessagePattern *)aMessagePattern value:(id)aValue capturedArguments:(NSArray **)capturedArguments{
+    return [[self alloc] initWithMessagePattern:aMessagePattern value:aValue capturedArguments:capturedArguments];
 }
 
 + (id)stubWithMessagePattern:(KWMessagePattern *)aMessagePattern block:(id (^)(NSArray *params))aBlock {
@@ -173,29 +180,35 @@
 - (BOOL)processInvocation:(NSInvocation *)anInvocation {
     if (![self.messagePattern matchesInvocation:anInvocation])
         return NO;
-	
-	if (self.block) {
-		NSUInteger numberOfArguments = [[anInvocation methodSignature] numberOfArguments];
-		NSMutableArray *args = [NSMutableArray arrayWithCapacity:(numberOfArguments-2)];
-		for (NSUInteger i = 2; i < numberOfArguments; ++i) {
-			id arg = [anInvocation getArgumentAtIndexAsObject:(int)i];
-			
-			const char *argType = [[anInvocation methodSignature] getArgumentTypeAtIndex:i];
-			if (strcmp(argType, "@?") == 0) arg = [arg copy];
-            
-            if (arg == nil)
-                arg = [NSNull null];
-            
-			[args addObject:arg];
-		}
-		
-		id newValue = self.block(args);
-		if (newValue != value) {
-			value = newValue;
-		}
-		
-		[args removeAllObjects]; // We don't want these objects to be in autorelease pool
-	}
+
+    NSUInteger numberOfArguments = [[anInvocation methodSignature] numberOfArguments];
+    NSMutableArray *args = [NSMutableArray arrayWithCapacity:(numberOfArguments-2)];
+
+    for (NSUInteger i = 2; i < numberOfArguments; ++i) {
+        id arg = [anInvocation getArgumentAtIndexAsObject:(int)i];
+
+        const char *argType = [[anInvocation methodSignature] getArgumentTypeAtIndex:i];
+        if (strcmp(argType, "@?") == 0) arg = [arg copy];
+
+        if (arg == nil)
+            arg = [NSNull null];
+
+        [args addObject:arg];
+    }
+
+    if (self.block) {
+
+        id newValue = self.block(args);
+        if (newValue != value) {
+            value = newValue;
+        }
+    }
+
+    if (_capturedArguments) {
+        *_capturedArguments = [args copy];
+    }
+
+    [args removeAllObjects]; // We don't want these objects to be in autorelease pool
 
     if (self.value == nil)
         [self writeZerosToInvocationReturnValue:anInvocation];

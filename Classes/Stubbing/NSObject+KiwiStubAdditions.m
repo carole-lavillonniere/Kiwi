@@ -35,7 +35,7 @@ static NSString * const ChangeStubValueAfterTimesKey = @"ChangeStubValueAfterTim
     KWMessagePattern *messagePattern = [KWMessagePattern messagePatternFromInvocation:anInvocation];
     id value = (anInvocationCapturer.userInfo)[StubValueKey];
     if (!(anInvocationCapturer.userInfo)[StubSecondValueKey]) {
-        [self stubMessagePattern:messagePattern andReturn:value];
+        [self stubMessagePattern:messagePattern andReturn:value capturedArguments:nil];
     } else {
         id times = (anInvocationCapturer.userInfo)[ChangeStubValueAfterTimesKey];
         id secondValue = (anInvocationCapturer.userInfo)[StubSecondValueKey];
@@ -47,7 +47,7 @@ static NSString * const ChangeStubValueAfterTimesKey = @"ChangeStubValueAfterTim
 
 - (void)stub:(SEL)aSelector {
     KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector];
-    [self stubMessagePattern:messagePattern andReturn:nil];
+    [self stubMessagePattern:messagePattern andReturn:nil capturedArguments:nil];
 }
 
 - (void)stub:(SEL)aSelector withBlock:(id (^)(NSArray *))block {
@@ -59,19 +59,19 @@ static NSString * const ChangeStubValueAfterTimesKey = @"ChangeStubValueAfterTim
     va_list argumentList;
     va_start(argumentList, firstArgument);
     KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector firstArgumentFilter:firstArgument argumentList:argumentList];
-    [self stubMessagePattern:messagePattern andReturn:nil];
+    [self stubMessagePattern:messagePattern andReturn:nil capturedArguments:nil];
 }
 
 - (void)stub:(SEL)aSelector andReturn:(id)aValue {
     KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector];
-    [self stubMessagePattern:messagePattern andReturn:aValue];
+    [self stubMessagePattern:messagePattern andReturn:aValue capturedArguments:nil];
 }
 
 - (void)stub:(SEL)aSelector andReturn:(id)aValue withArguments:(id)firstArgument, ... {
     va_list argumentList;
     va_start(argumentList, firstArgument);
     KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector firstArgumentFilter:firstArgument argumentList:argumentList];
-    [self stubMessagePattern:messagePattern andReturn:aValue];
+    [self stubMessagePattern:messagePattern andReturn:aValue capturedArguments:nil];
 }
 
 - (void)stub:(SEL)aSelector andReturn:(id)aValue times:(NSNumber *)times afterThatReturn:(id)aSecondValue {
@@ -127,11 +127,11 @@ static NSString * const ChangeStubValueAfterTimesKey = @"ChangeStubValueAfterTim
     return [KWInvocationCapturer invocationCapturerWithDelegate:self userInfo:userInfo];
 }
 
-- (void)stubMessagePattern:(KWMessagePattern *)aMessagePattern andReturn:(id)aValue {
-    [self stubMessagePattern:aMessagePattern andReturn:aValue overrideExisting:YES];
+- (void)stubMessagePattern:(KWMessagePattern *)aMessagePattern andReturn:(id)aValue capturedArguments:(NSArray **)capturedArguments{
+    [self stubMessagePattern:aMessagePattern andReturn:aValue overrideExisting:YES capturedArguments:capturedArguments];
 }
 
-- (void)stubMessagePattern:(KWMessagePattern *)aMessagePattern andReturn:(id)aValue overrideExisting:(BOOL)overrideExisting {
+- (void)stubMessagePattern:(KWMessagePattern *)aMessagePattern andReturn:(id)aValue overrideExisting:(BOOL)overrideExisting capturedArguments:(NSArray **)capturedArguments{
     if ([self methodSignatureForSelector:aMessagePattern.selector] == nil) {
         [NSException raise:@"KWStubException" format:@"cannot stub -%@ because no such method exists",
          NSStringFromSelector(aMessagePattern.selector)];
@@ -139,7 +139,7 @@ static NSString * const ChangeStubValueAfterTimesKey = @"ChangeStubValueAfterTim
     
     Class interceptClass = KWSetupObjectInterceptSupport(self);
     KWSetupMethodInterceptSupport(interceptClass, aMessagePattern.selector);
-    KWStub *stub = [KWStub stubWithMessagePattern:aMessagePattern value:aValue];
+    KWStub *stub = [KWStub stubWithMessagePattern:aMessagePattern value:aValue capturedArguments:capturedArguments];
     KWAssociateObjectStub(self, stub, overrideExisting);
 }
 

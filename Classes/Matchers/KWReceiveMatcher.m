@@ -96,17 +96,17 @@ static NSString * const StubValueKey = @"StubValueKey";
 
 - (void)receive:(SEL)aSelector withCount:(NSUInteger)aCount {
     KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector];
-    return [self receiveMessagePattern:messagePattern countType:KWCountTypeExact count:aCount];
+    return [self receiveMessagePattern:messagePattern countType:KWCountTypeExact count:aCount capturedArguments:nil];
 }
 
 - (void)receive:(SEL)aSelector withCountAtLeast:(NSUInteger)aCount {
     KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector];
-    return [self receiveMessagePattern:messagePattern countType:KWCountTypeAtLeast count:aCount];
+    return [self receiveMessagePattern:messagePattern countType:KWCountTypeAtLeast count:aCount capturedArguments:nil];
 }
 
 - (void)receive:(SEL)aSelector withCountAtMost:(NSUInteger)aCount {
     KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector];
-    return [self receiveMessagePattern:messagePattern countType:KWCountTypeAtMost count:aCount];
+    return [self receiveMessagePattern:messagePattern countType:KWCountTypeAtMost count:aCount capturedArguments:nil];
 }
 
 - (void)receive:(SEL)aSelector andReturn:(id)aValue {
@@ -116,41 +116,51 @@ static NSString * const StubValueKey = @"StubValueKey";
 
 - (void)receive:(SEL)aSelector andReturn:(id)aValue withCount:(NSUInteger)aCount {
     KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector];
-    [self receiveMessagePattern:messagePattern andReturn:aValue countType:KWCountTypeExact count:aCount];
+    [self receiveMessagePattern:messagePattern andReturn:aValue countType:KWCountTypeExact count:aCount capturedArguments:nil];
 }
 
 - (void)receive:(SEL)aSelector andReturn:(id)aValue withCountAtLeast:(NSUInteger)aCount {
     KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector];
-    [self receiveMessagePattern:messagePattern andReturn:aValue countType:KWCountTypeAtLeast count:aCount];
+    [self receiveMessagePattern:messagePattern andReturn:aValue countType:KWCountTypeAtLeast count:aCount capturedArguments:nil];
 }
 
 - (void)receive:(SEL)aSelector andReturn:(id)aValue withCountAtMost:(NSUInteger)aCount {
     KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector];
-    [self receiveMessagePattern:messagePattern andReturn:aValue countType:KWCountTypeAtMost count:aCount];
+    [self receiveMessagePattern:messagePattern andReturn:aValue countType:KWCountTypeAtMost count:aCount capturedArguments:nil];
 }
 
-- (void)receiveUnspecifiedCountOfMessagePattern:(KWMessagePattern *)messagePattern {
+- (void)receive:(SEL)aSelector capturedArguments:(NSArray **)capturedArguments {
+    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector];
+    [self receiveMessagePattern:messagePattern countType:KWCountTypeExact count:1 capturedArguments:capturedArguments];
+}
+
+- (void)receive:(SEL)aSelector andReturn:(id)aValue capturedArguments:(NSArray **)capturedArguments {
+    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector];
+    [self receiveMessagePattern:messagePattern andReturn:aValue countType:KWCountTypeExact count:1 capturedArguments:capturedArguments];
+}
+
+- (void)receiveUnspecifiedCountOfMessagePattern:(KWMessagePattern *)messagePattern{
     if (self.willEvaluateAgainstNegativeExpectation) {
-        [self receiveMessagePattern:messagePattern countType:KWCountTypeAtLeast count:1];
+        [self receiveMessagePattern:messagePattern countType:KWCountTypeAtLeast count:1 capturedArguments:nil];
     } else {
-        [self receiveMessagePattern:messagePattern countType:KWCountTypeExact count:1];
+        [self receiveMessagePattern:messagePattern countType:KWCountTypeExact count:1 capturedArguments:nil];
     }
 }
 
 - (void)receiveUnspecifiedCountOfMessagePattern:(KWMessagePattern *)messagePattern andReturn:(id)aValue {
     if (self.willEvaluateAgainstNegativeExpectation) {
-        [self receiveMessagePattern:messagePattern andReturn:aValue countType:KWCountTypeAtLeast count:1];
+        [self receiveMessagePattern:messagePattern andReturn:aValue countType:KWCountTypeAtLeast count:1 capturedArguments:nil];
     } else {
-        [self receiveMessagePattern:messagePattern andReturn:aValue countType:KWCountTypeExact count:1];
+        [self receiveMessagePattern:messagePattern andReturn:aValue countType:KWCountTypeExact count:1 capturedArguments:nil];
     }
 }
 
-- (void)receiveMessagePattern:(KWMessagePattern *)aMessagePattern countType:(KWCountType)aCountType count:(NSUInteger)aCount {
+- (void)receiveMessagePattern:(KWMessagePattern *)aMessagePattern countType:(KWCountType)aCountType count:(NSUInteger)aCount capturedArguments:(NSArray **)capturedArguments{
 #if KW_TARGET_HAS_INVOCATION_EXCEPTION_BUG
     @try {
 #endif // #if KW_TARGET_HAS_INVOCATION_EXCEPTION_BUG
 
-    [self.subject stubMessagePattern:aMessagePattern andReturn:nil overrideExisting:NO];
+    [self.subject stubMessagePattern:aMessagePattern andReturn:nil overrideExisting:NO capturedArguments:capturedArguments];
     self.messageTracker = [KWMessageTracker messageTrackerWithSubject:self.subject messagePattern:aMessagePattern countType:aCountType count:aCount];
 
 #if KW_TARGET_HAS_INVOCATION_EXCEPTION_BUG
@@ -160,12 +170,12 @@ static NSString * const StubValueKey = @"StubValueKey";
 #endif // #if KW_TARGET_HAS_INVOCATION_EXCEPTION_BUG
 }
 
-- (void)receiveMessagePattern:(KWMessagePattern *)aMessagePattern andReturn:(id)aValue countType:(KWCountType)aCountType count:(NSUInteger)aCount {
+- (void)receiveMessagePattern:(KWMessagePattern *)aMessagePattern andReturn:(id)aValue countType:(KWCountType)aCountType count:(NSUInteger)aCount capturedArguments:(NSArray **)capturedArguments{
 #if KW_TARGET_HAS_INVOCATION_EXCEPTION_BUG
     @try {
 #endif // #if KW_TARGET_HAS_INVOCATION_EXCEPTION_BUG
 
-    [self.subject stubMessagePattern:aMessagePattern andReturn:aValue];
+    [self.subject stubMessagePattern:aMessagePattern andReturn:aValue capturedArguments:capturedArguments];
     self.messageTracker = [KWMessageTracker messageTrackerWithSubject:self.subject messagePattern:aMessagePattern countType:aCountType count:aCount];
 
 #if KW_TARGET_HAS_INVOCATION_EXCEPTION_BUG
@@ -196,9 +206,9 @@ static NSString * const StubValueKey = @"StubValueKey";
     KWMessagePattern *messagePattern = [KWMessagePattern messagePatternFromInvocation:anInvocation];
 
     if (stubValue != nil)
-        [verifier receiveMessagePattern:messagePattern andReturn:stubValue countType:countType count:count];
+        [verifier receiveMessagePattern:messagePattern andReturn:stubValue countType:countType count:count capturedArguments:nil];
     else
-        [verifier receiveMessagePattern:messagePattern countType:countType count:count];
+        [verifier receiveMessagePattern:messagePattern countType:countType count:count capturedArguments:nil];
 }
 
 @end
@@ -218,21 +228,28 @@ static NSString * const StubValueKey = @"StubValueKey";
     va_list argumentList;
     va_start(argumentList, firstArgument);
     KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector firstArgumentFilter:firstArgument argumentList:argumentList];
-    [(id)self receiveMessagePattern:messagePattern countType:KWCountTypeExact count:aCount];
+    [(id)self receiveMessagePattern:messagePattern countType:KWCountTypeExact count:aCount capturedArguments:nil];
 }
 
 - (void)receive:(SEL)aSelector withCountAtLeast:(NSUInteger)aCount arguments:(id)firstArgument, ... {
     va_list argumentList;
     va_start(argumentList, firstArgument);
     KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector firstArgumentFilter:firstArgument argumentList:argumentList];
-    [(id)self receiveMessagePattern:messagePattern countType:KWCountTypeAtLeast count:aCount];
+    [(id)self receiveMessagePattern:messagePattern countType:KWCountTypeAtLeast count:aCount capturedArguments:nil];
 }
 
 - (void)receive:(SEL)aSelector withCountAtMost:(NSUInteger)aCount arguments:(id)firstArgument, ... {
     va_list argumentList;
     va_start(argumentList, firstArgument);
     KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector firstArgumentFilter:firstArgument argumentList:argumentList];
-    [(id)self receiveMessagePattern:messagePattern countType:KWCountTypeAtMost count:aCount];
+    [(id)self receiveMessagePattern:messagePattern countType:KWCountTypeAtMost count:aCount capturedArguments:nil];
+}
+
+- (void)receive:(SEL)aSelector capturedArguments:(NSArray **)capturedArguments withArguments:(id)firstArgument, ... {
+    va_list argumentList;
+    va_start(argumentList, firstArgument);
+    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector firstArgumentFilter:firstArgument argumentList:argumentList];
+    [(id)self receiveMessagePattern:messagePattern countType:KWCountTypeExact count:1 capturedArguments:capturedArguments];
 }
 
 - (void)receive:(SEL)aSelector andReturn:(id)aValue withArguments:(id)firstArgument, ... {
@@ -246,21 +263,28 @@ static NSString * const StubValueKey = @"StubValueKey";
     va_list argumentList;
     va_start(argumentList, firstArgument);
     KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector firstArgumentFilter:firstArgument argumentList:argumentList];
-    [(id)self receiveMessagePattern:messagePattern andReturn:aValue countType:KWCountTypeExact count:aCount];
+    [(id)self receiveMessagePattern:messagePattern andReturn:aValue countType:KWCountTypeExact count:aCount capturedArguments:nil];
 }
 
 - (void)receive:(SEL)aSelector andReturn:(id)aValue withCountAtLeast:(NSUInteger)aCount arguments:(id)firstArgument, ... {
     va_list argumentList;
     va_start(argumentList, firstArgument);
     KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector firstArgumentFilter:firstArgument argumentList:argumentList];
-    [(id)self receiveMessagePattern:messagePattern andReturn:aValue countType:KWCountTypeAtLeast count:aCount];
+    [(id)self receiveMessagePattern:messagePattern andReturn:aValue countType:KWCountTypeAtLeast count:aCount capturedArguments:nil];
 }
 
 - (void)receive:(SEL)aSelector andReturn:(id)aValue withCountAtMost:(NSUInteger)aCount arguments:(id)firstArgument, ... {
     va_list argumentList;
     va_start(argumentList, firstArgument);
     KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector firstArgumentFilter:firstArgument argumentList:argumentList];
-    [(id)self receiveMessagePattern:messagePattern andReturn:aValue countType:KWCountTypeAtMost count:aCount];
+    [(id)self receiveMessagePattern:messagePattern andReturn:aValue countType:KWCountTypeAtMost count:aCount capturedArguments:nil];
+}
+
+- (void)receive:(SEL)aSelector andReturn:(id)aValue capturedArguments:(NSArray **)capturedArguments withArguments:(id)firstArgument, ... {
+    va_list argumentList;
+    va_start(argumentList, firstArgument);
+    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:aSelector firstArgumentFilter:firstArgument argumentList:argumentList];
+    [(id)self receiveMessagePattern:messagePattern andReturn:aValue countType:KWCountTypeExact count:1 capturedArguments:capturedArguments];
 }
 
 #pragma mark Invocation Capturing Methods
