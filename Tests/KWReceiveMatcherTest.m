@@ -18,18 +18,22 @@
 
 - (void)testItShouldHaveTheRightMatcherStrings {
     id matcherStrings = [KWReceiveMatcher matcherStrings];
-    id expectedStrings = @[@"receive:",
-                                                   @"receive:withCount:",
-                                                   @"receive:withCountAtLeast:",
-                                                   @"receive:withCountAtMost:",
-                                                   @"receive:andReturn:",
-                                                   @"receive:andReturn:withCount:",
-                                                   @"receive:andReturn:withCountAtLeast:",
-                                                   @"receive:andReturn:withCountAtMost:",
-                                                   @"receiveMessagePattern:countType:count:",
-                                                   @"receiveMessagePattern:andReturn:countType:count:",
-                                                   @"receiveUnspecifiedCountOfMessagePattern:",
-                                                   @"receiveUnspecifiedCountOfMessagePattern:andReturn:"];
+    id expectedStrings = @[
+            NSStringFromSelector(@selector(receive:)),
+            NSStringFromSelector(@selector(receive:withCount:)),
+            NSStringFromSelector(@selector(receive:withCountAtLeast:)),
+            NSStringFromSelector(@selector(receive:withCountAtMost:)),
+            NSStringFromSelector(@selector(receive:capturedArguments:)),
+            NSStringFromSelector(@selector(receive:andReturn:)),
+            NSStringFromSelector(@selector(receive:andReturn:withCount:)),
+            NSStringFromSelector(@selector(receive:andReturn:withCountAtLeast:)),
+            NSStringFromSelector(@selector(receive:andReturn:withCountAtMost:)),
+            NSStringFromSelector(@selector(receive:andReturn:capturedArguments:)),
+            NSStringFromSelector(@selector(receiveMessagePattern:countType:count:capturedArguments:)),
+            NSStringFromSelector(@selector(receiveMessagePattern:andReturn:countType:count:capturedArguments:)),
+            NSStringFromSelector(@selector(receiveUnspecifiedCountOfMessagePattern:)),
+            NSStringFromSelector(@selector(receiveUnspecifiedCountOfMessagePattern:andReturn:))
+    ];
     STAssertEqualObjects([matcherStrings sortedArrayUsingSelector:@selector(compare:)],
                          [expectedStrings sortedArrayUsingSelector:@selector(compare:)],
                          @"expected specific matcher strings");
