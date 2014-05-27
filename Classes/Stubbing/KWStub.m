@@ -204,7 +204,7 @@
         }
     }
 
-    if (_capturedArguments) {
+    if (_capturedArguments != NULL) {
         *_capturedArguments = [args copy];
     }
 
