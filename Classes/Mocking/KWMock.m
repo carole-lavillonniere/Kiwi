@@ -264,7 +264,7 @@ static NSString * const ChangeStubValueAfterTimesKey = @"ChangeStubValueAfterTim
             return;
         }
     }
-    KWStub *stub = [KWStub stubWithMessagePattern:aMessagePattern value:aValue];
+    KWStub *stub = [KWStub stubWithMessagePattern:aMessagePattern value:aValue capturedArguments:capturedArguments];
     [self.stubs addObject:stub];
 }
 
