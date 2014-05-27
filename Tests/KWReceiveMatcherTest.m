@@ -232,14 +232,6 @@
     STAssertFalse([matcher evaluate], @"expected negative match");
 }
 
-- (void)testItShouldWorkWithAMock {
-    id subject = [Robot mock];
-    id matcher = [KWReceiveMatcher matcherWithSubject:subject];
-    [matcher receive:@selector(speak:ofType:)];
-    [subject speak:@"Hello" ofType:[NSString class]];
-    STAssertTrue([matcher evaluate], @"expected positive match");
-}
-
 @end
 
 #endif // #if KW_TESTS_ENABLED
