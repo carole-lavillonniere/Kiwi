@@ -17,7 +17,7 @@
 @end
 
 @implementation KWStub {
-    NSArray * __autoreleasing *_capturedArguments;
+    NSArray * __strong *_capturedArguments;
 }
 
 #pragma mark - Initializing
@@ -26,7 +26,7 @@
     return [self initWithMessagePattern:aMessagePattern value:nil capturedArguments:nil];
 }
 
-- (id)initWithMessagePattern:(KWMessagePattern *)aMessagePattern value:(id)aValue capturedArguments:(NSArray **)capturedArguments {
+- (id)initWithMessagePattern:(KWMessagePattern *)aMessagePattern value:(id)aValue capturedArguments:(NSArray *__strong*)capturedArguments {
     self = [super init];
     if (self) {
         messagePattern = aMessagePattern;
@@ -64,7 +64,7 @@
     return [[self alloc] initWithMessagePattern:aMessagePattern value:aValue capturedArguments:nil];
 }
 
-+ (id)stubWithMessagePattern:(KWMessagePattern *)aMessagePattern value:(id)aValue capturedArguments:(NSArray **)capturedArguments{
++ (id)stubWithMessagePattern:(KWMessagePattern *)aMessagePattern value:(id)aValue capturedArguments:(NSArray *__strong*)capturedArguments{
     return [[self alloc] initWithMessagePattern:aMessagePattern value:aValue capturedArguments:capturedArguments];
 }
 

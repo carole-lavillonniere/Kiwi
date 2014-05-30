@@ -254,7 +254,7 @@ static NSString * const ChangeStubValueAfterTimesKey = @"ChangeStubValueAfterTim
     [self stubMessagePattern:aMessagePattern andReturn:aValue overrideExisting:YES capturedArguments:nil];
 }
 
-- (void)stubMessagePattern:(KWMessagePattern *)aMessagePattern andReturn:(id)aValue overrideExisting:(BOOL)overrideExisting capturedArguments:(NSArray **)capturedArguments {
+- (void)stubMessagePattern:(KWMessagePattern *)aMessagePattern andReturn:(id)aValue overrideExisting:(BOOL)overrideExisting capturedArguments:(NSArray *__strong*)capturedArguments {
     [self expectMessagePattern:aMessagePattern];
     KWStub *existingStub = [self currentStubWithMessagePattern:aMessagePattern];
     if (existingStub) {

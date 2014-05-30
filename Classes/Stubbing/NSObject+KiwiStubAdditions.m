@@ -127,11 +127,11 @@ static NSString * const ChangeStubValueAfterTimesKey = @"ChangeStubValueAfterTim
     return [KWInvocationCapturer invocationCapturerWithDelegate:self userInfo:userInfo];
 }
 
-- (void)stubMessagePattern:(KWMessagePattern *)aMessagePattern andReturn:(id)aValue capturedArguments:(NSArray **)capturedArguments{
+- (void)stubMessagePattern:(KWMessagePattern *)aMessagePattern andReturn:(id)aValue capturedArguments:(NSArray *__strong*)capturedArguments{
     [self stubMessagePattern:aMessagePattern andReturn:aValue overrideExisting:YES capturedArguments:capturedArguments];
 }
 
-- (void)stubMessagePattern:(KWMessagePattern *)aMessagePattern andReturn:(id)aValue overrideExisting:(BOOL)overrideExisting capturedArguments:(NSArray **)capturedArguments{
+- (void)stubMessagePattern:(KWMessagePattern *)aMessagePattern andReturn:(id)aValue overrideExisting:(BOOL)overrideExisting capturedArguments:(NSArray *__strong*)capturedArguments{
     if ([self methodSignatureForSelector:aMessagePattern.selector] == nil) {
         [NSException raise:@"KWStubException" format:@"cannot stub -%@ because no such method exists",
          NSStringFromSelector(aMessagePattern.selector)];

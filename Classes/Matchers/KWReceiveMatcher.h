@@ -23,16 +23,16 @@
 - (void)receive:(SEL)aSelector withCount:(NSUInteger)aCount;
 - (void)receive:(SEL)aSelector withCountAtLeast:(NSUInteger)aCount;
 - (void)receive:(SEL)aSelector withCountAtMost:(NSUInteger)aCount;
-- (void)receive:(SEL)aSelector capturedArguments:(NSArray **)capturedArguments;
+- (void)receive:(SEL)aSelector capturedArguments:(NSArray *__strong*)capturedArguments;
 - (void)receive:(SEL)aSelector andReturn:(id)aValue;
 - (void)receive:(SEL)aSelector andReturn:(id)aValue withCount:(NSUInteger)aCount;
 - (void)receive:(SEL)aSelector andReturn:(id)aValue withCountAtLeast:(NSUInteger)aCount;
 - (void)receive:(SEL)aSelector andReturn:(id)aValue withCountAtMost:(NSUInteger)aCount;
-- (void)receive:(SEL)aSelector andReturn:(id)aValue capturedArguments:(NSArray **)capturedArguments;
+- (void)receive:(SEL)aSelector andReturn:(id)aValue capturedArguments:(NSArray *__strong*)capturedArguments;
 
 // These methods will become private
-- (void)receiveMessagePattern:(KWMessagePattern *)aMessagePattern countType:(KWCountType)aCountType count:(NSUInteger)aCount capturedArguments:(NSArray **)capturedArguments;
-- (void)receiveMessagePattern:(KWMessagePattern *)aMessagePattern andReturn:(id)aValue countType:(KWCountType)aCountType count:(NSUInteger)aCount capturedArguments:(NSArray **)capturedArguments;
+- (void)receiveMessagePattern:(KWMessagePattern *)aMessagePattern countType:(KWCountType)aCountType count:(NSUInteger)aCount capturedArguments:(NSArray *__strong*)capturedArguments;
+- (void)receiveMessagePattern:(KWMessagePattern *)aMessagePattern andReturn:(id)aValue countType:(KWCountType)aCountType count:(NSUInteger)aCount capturedArguments:(NSArray *__strong*)capturedArguments;
 
 @end
 
@@ -44,12 +44,12 @@
 - (void)receive:(SEL)aSelector withCount:(NSUInteger)aCount arguments:(id)firstArgument, ...;
 - (void)receive:(SEL)aSelector withCountAtLeast:(NSUInteger)aCount arguments:(id)firstArgument, ...;
 - (void)receive:(SEL)aSelector withCountAtMost:(NSUInteger)aCount arguments:(id)firstArgument, ...;
-- (void)receive:(SEL)aSelector capturedArguments:(NSArray **)capturedArguments withArguments:(id)firstArgument, ...;
+- (void)receive:(SEL)aSelector capturedArguments:(NSArray *__strong*)capturedArguments withArguments:(id)firstArgument, ...;
 - (void)receive:(SEL)aSelector andReturn:(id)aValue withArguments:(id)firstArgument, ...;
 - (void)receive:(SEL)aSelector andReturn:(id)aValue withCount:(NSUInteger)aCount arguments:(id)firstArgument, ...;
 - (void)receive:(SEL)aSelector andReturn:(id)aValue withCountAtLeast:(NSUInteger)aCount arguments:(id)firstArgument, ...;
 - (void)receive:(SEL)aSelector andReturn:(id)aValue withCountAtMost:(NSUInteger)aCount arguments:(id)firstArgument, ...;
-- (void)receive:(SEL)aSelector andReturn:(id)aValue capturedArguments:(NSArray **)capturedArguments  withArguments:(id)firstArgument, ...;
+- (void)receive:(SEL)aSelector andReturn:(id)aValue capturedArguments:(NSArray *__strong*)capturedArguments  withArguments:(id)firstArgument, ...;
 
 #pragma mark Invocation Capturing Methods
 
